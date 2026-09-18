@@ -44,9 +44,16 @@
   const azaltilmisHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const hedef = document.getElementById('veri-agi-tuval');
 
-  // Azaltılmış hareket tercih edildiğinde animasyon hiç başlatılmaz; zemin,
-  // ızgara ve parlama katmanları sabit kalır — bu, en sade ve en erişilebilir seçenektir.
-  if (!azaltilmisHareket && hedef) {
+  // Modülün en üst seviyesinde await kullanılmaz: tsParticles'in üretim
+  // derlemesinde motoru ayrı, birbirine döngüsel bağımlı parçalara (chunk)
+  // bölmesi, üst seviye await ile birleşince tarayıcıda modül grafiğinin
+  // hiç ilerlemediği bir kilitlenmeye yol açıyor (yerelde `astro dev` paketlemeden
+  // sunduğu için görünmüyor, yalnızca `astro build` çıktısında ortaya çıkıyor).
+  // Aynı mantık bir async IIFE içine alınarak modül değerlendirmesi
+  // senkron biçimde tamamlanır ve kilitlenme ortadan kalkar.
+  async function baslat() {
+    if (azaltilmisHareket || !hedef) return;
+
     const mobilMi = window.matchMedia('(max-width: 640px)').matches;
 
     await loadSlim(tsParticles);
@@ -103,4 +110,6 @@
       }
     });
   }
+
+  baslat();
 </script>
