@@ -6,8 +6,9 @@
 /*
   HTS Analiz Programı — tasarım belirteç katmanı.
 
-  Koyu lacivert taban, camsı (glass) panel yüzeyler, siyan/mor/pembe uçlu
-  çok renkli vurgu paleti. Amaç: analitik/canlı-veri hissi.
+  Koyu grafit taban, camsı (glass) panel yüzeyler, jade/petrol ağırlıklı
+  ölçülü vurgu paleti. Amaç: analitik/canlı-veri hissi — parlak neon
+  gradyan yerine sade, tek aileden zengin tonlar.
 */
 
 @theme {
@@ -16,23 +17,23 @@
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 
   /* Taban */
-  --color-zemin: #070b14;
-  --color-zemin-2: #0b1220;
-  --color-panel: #0d1526;
-  --color-panel-cizgi: #1b2740;
-  --color-panel-cizgi-parlak: #2b3a5c;
+  --color-zemin: #0a0c0b;
+  --color-zemin-2: #0e100f;
+  --color-panel: #141715;
+  --color-panel-cizgi: #262a27;
+  --color-panel-cizgi-parlak: #3a4038;
 
   /* Metin */
-  --color-metin: #e7ecf7;
-  --color-metin-ikincil: #9aa7c2;
-  --color-metin-soluk: #64708c;
+  --color-metin: #ecefec;
+  --color-metin-ikincil: #a2aba3;
+  --color-metin-soluk: #6b756c;
 
-  /* Çok renkli vurgu paleti — özellik rozetlerinde dönüşümlü kullanılır */
-  --color-siyan: #22d3ee;
-  --color-mavi: #3b82f6;
-  --color-mor: #8b5cf6;
-  --color-pembe: #ec4899;
-  --color-yesil: #34d399;
+  /* Vurgu paleti — özellik rozetlerinde dönüşümlü kullanılır */
+  --color-siyan: #22b88c;
+  --color-mavi: #5c7a99;
+  --color-mor: #3e5c76;
+  --color-pembe: #b0705a;
+  --color-yesil: #6fa37d;
 
   --radius-panel: 1rem;
   --radius-pill: 999px;

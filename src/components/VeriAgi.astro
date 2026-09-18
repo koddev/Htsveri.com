@@ -85,7 +85,7 @@
 
       function birKareCiz() {
         baglam!.clearRect(0, 0, genislik, yukseklik);
-        baglam!.fillStyle = 'rgba(7, 11, 20, 1)';
+        baglam!.fillStyle = 'rgba(10, 12, 11, 1)';
         baglam!.fillRect(0, 0, genislik, yukseklik);
 
         const maxMesafe = mobilMi() ? 110 : 150;
@@ -100,7 +100,7 @@
             if (mesafe < maxMesafe) {
               const opaklik = (1 - mesafe / maxMesafe) * 0.32;
               baglam!.strokeStyle =
-                (i + j) % 6 === 0 ? `rgba(139, 92, 246, ${opaklik})` : `rgba(34, 211, 238, ${opaklik})`;
+                (i + j) % 6 === 0 ? `rgba(62, 92, 118, ${opaklik})` : `rgba(34, 184, 140, ${opaklik})`;
               baglam!.lineWidth = 1;
               baglam!.beginPath();
               baglam!.moveTo(a.x, a.y);
@@ -112,14 +112,14 @@
 
         for (const d of dugumler) {
           const parlama = baglam!.createRadialGradient(d.x, d.y, 0, d.x, d.y, 7);
-          parlama.addColorStop(0, 'rgba(103, 232, 249, 0.9)');
-          parlama.addColorStop(1, 'rgba(103, 232, 249, 0)');
+          parlama.addColorStop(0, 'rgba(110, 224, 190, 0.9)');
+          parlama.addColorStop(1, 'rgba(110, 224, 190, 0)');
           baglam!.fillStyle = parlama;
           baglam!.beginPath();
           baglam!.arc(d.x, d.y, 7, 0, Math.PI * 2);
           baglam!.fill();
 
-          baglam!.fillStyle = 'rgba(224, 242, 254, 0.95)';
+          baglam!.fillStyle = 'rgba(236, 239, 236, 0.95)';
           baglam!.beginPath();
           baglam!.arc(d.x, d.y, d.r, 0, Math.PI * 2);
           baglam!.fill();
