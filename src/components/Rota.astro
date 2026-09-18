@@ -36,91 +36,72 @@ const adimlar: Adim[] = [
 ];
 ---
 
-<div class="rota-omurga">
+<ol class="zaman-cizelgesi">
   {
     adimlar.map((adim, i) => (
-      <div class:list={['rota-adim', i % 2 === 1 && 'rota-adim-ters']}>
-        <div class="rota-nokta" aria-hidden="true" />
-        <div class="cam-panel rota-kart p-6">
-          <div class="mb-3 flex items-center gap-3">
-            <span class="rota-simge-kapsul">
+      <li class="zaman-adimi">
+        <div class="zaman-isareti" aria-hidden="true" />
+        <div class="zaman-icerik">
+          <p class="belge-referansi zaman-adim-no">{`Adım ${String(i + 1).padStart(2, '0')}`}</p>
+          <div class="mt-2 flex items-start gap-3">
+            <span class="zaman-simge">
               <Simge ad={adim.simge} />
             </span>
-            <span class="text-sm font-semibold tracking-wide text-[color:var(--color-metin-soluk)]">
-              Adım {i + 1}
-            </span>
+            <div>
+              <h3 class="text-lg font-semibold">{adim.baslik}</h3>
+              <p class="mt-1.5 text-sm text-[color:var(--color-metin-ikincil)]">{adim.aciklama}</p>
+            </div>
           </div>
-          <h3 class="text-xl font-bold">{adim.baslik}</h3>
-          <p class="mt-2 text-[color:var(--color-metin-ikincil)]">{adim.aciklama}</p>
         </div>
-      </div>
+      </li>
     ))
   }
-</div>
+</ol>
 
 <style>
-  .rota-omurga {
+  .zaman-cizelgesi {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-    max-width: 52rem;
-    margin: 0 auto;
-    padding-left: 2rem;
+    max-width: 42rem;
+    margin: 0;
+    padding-left: 1.75rem;
+    list-style: none;
   }
-  .rota-omurga::before {
+  .zaman-cizelgesi::before {
     content: '';
     position: absolute;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    left: 0.4rem;
-    width: 2px;
-    background: linear-gradient(180deg, var(--color-siyan), var(--color-mor));
-    opacity: 0.6;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    left: 0.3rem;
+    width: 1px;
+    background: var(--color-panel-cizgi-parlak);
   }
-  .rota-adim {
+  .zaman-adimi {
     position: relative;
+    padding-bottom: 2.5rem;
   }
-  .rota-nokta {
+  .zaman-adimi:last-child {
+    padding-bottom: 0;
+  }
+  .zaman-isareti {
     position: absolute;
-    top: 1.9rem;
-    left: -2rem;
-    width: 0.9rem;
-    height: 0.9rem;
-    border-radius: 50%;
-    background: var(--color-siyan);
-    box-shadow: 0 0 16px 3px color-mix(in srgb, var(--color-siyan) 70%, transparent);
-    transform: translateX(0.35rem);
+    top: 0.35rem;
+    left: -1.75rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: var(--color-zemin);
+    border: 2px solid var(--color-tugla);
+    transform: translateX(0.05rem);
   }
-  .rota-simge-kapsul {
+  .zaman-adim-no {
+    margin-bottom: 0;
+  }
+  .zaman-simge {
     display: inline-flex;
-    width: 1.6rem;
-    height: 1.6rem;
-    color: var(--color-siyan);
-  }
-
-  @media (min-width: 768px) {
-    .rota-omurga {
-      padding-left: 0;
-    }
-    .rota-omurga::before {
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .rota-adim {
-      width: calc(50% - 2.5rem);
-    }
-    .rota-adim-ters {
-      align-self: flex-end;
-    }
-    .rota-nokta {
-      left: auto;
-      right: -2.9rem;
-      transform: none;
-    }
-    .rota-adim-ters .rota-nokta {
-      right: auto;
-      left: -2.9rem;
-    }
+    width: 1.4rem;
+    height: 1.4rem;
+    flex-shrink: 0;
+    color: var(--color-metin-ikincil);
+    margin-top: 0.15rem;
   }
 </style>

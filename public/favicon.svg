@@ -1,25 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="HTS Analiz Programı simgesi">
-  <defs>
-    <radialGradient id="parlama" cx="50%" cy="42%" r="65%">
-      <stop offset="0%" stop-color="#22b88c" stop-opacity="0.55" />
-      <stop offset="100%" stop-color="#22b88c" stop-opacity="0" />
-    </radialGradient>
-    <linearGradient id="dugum" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22b88c" />
-      <stop offset="100%" stop-color="#3e5c76" />
-    </linearGradient>
-  </defs>
-  <rect width="32" height="32" rx="8" fill="#0a0c0b" />
-  <circle cx="16" cy="15" r="13" fill="url(#parlama)" />
-  <g stroke="url(#dugum)" stroke-width="1.4" opacity="0.85">
-    <line x1="16" y1="15" x2="7" y2="10" />
-    <line x1="16" y1="15" x2="25" y2="10" />
-    <line x1="16" y1="15" x2="9" y2="23" />
-    <line x1="16" y1="15" x2="23" y2="23" />
-  </g>
-  <circle cx="16" cy="15" r="3.4" fill="url(#dugum)" />
-  <circle cx="7" cy="10" r="1.7" fill="#22b88c" />
-  <circle cx="25" cy="10" r="1.7" fill="#22b88c" />
-  <circle cx="9" cy="23" r="1.7" fill="#3e5c76" />
-  <circle cx="23" cy="23" r="1.7" fill="#3e5c76" />
+  <rect width="32" height="32" rx="6" fill="#0b0c0d" />
+  <rect x="6" y="6" width="20" height="20" rx="2" fill="none" stroke="#b23a2c" stroke-width="1.8" />
+  <path d="M11 16h10M16 11v10" stroke="#b23a2c" stroke-width="1.8" stroke-linecap="round" />
 </svg>

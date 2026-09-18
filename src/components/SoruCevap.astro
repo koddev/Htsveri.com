@@ -2,17 +2,15 @@
 import { sorular } from '~/data/sorular';
 ---
 
-<div class="mx-auto flex max-w-3xl flex-col gap-3">
+<div class="mx-auto flex max-w-3xl flex-col">
   {
     sorular.map((s) => (
-      <details class="cam-panel soru-detay group px-5 py-1">
-        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left font-semibold">
+      <details class="cizgili-satir soru-detay group">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-medium">
           <span>{s.soru}</span>
-          <span class="soru-ok" aria-hidden="true">
-            ↓
-          </span>
+          <span class="soru-isaret" aria-hidden="true">+</span>
         </summary>
-        <p class="pb-5 text-[color:var(--color-metin-ikincil)]">{s.cevap}</p>
+        <p class="pb-5 text-sm text-[color:var(--color-metin-ikincil)]">{s.cevap}</p>
       </details>
     ))
   }
@@ -22,12 +20,15 @@ import { sorular } from '~/data/sorular';
   .soru-detay summary::-webkit-details-marker {
     display: none;
   }
-  .soru-ok {
+  .soru-isaret {
     flex-shrink: 0;
-    color: var(--color-siyan);
-    transition: transform 0.2s ease;
+    color: var(--color-metin-soluk);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform 0.15s ease;
   }
-  .soru-detay[open] .soru-ok {
-    transform: rotate(180deg);
+  .soru-detay[open] .soru-isaret {
+    transform: rotate(45deg);
   }
 </style>

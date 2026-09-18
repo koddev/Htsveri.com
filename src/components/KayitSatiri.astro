@@ -1,0 +1,49 @@
+---
+// Özellik listesi satırı — kart/rozet yerine, ince çizgiyle ayrılmış bir
+// içindekiler/delil listesi satırı. İkon tek renkli (mürekkep) kullanılır.
+import Simge from './Simge.astro';
+import type { SimgeAdi } from '~/data/simgeler';
+
+interface Props {
+  index: number;
+  simge: SimgeAdi;
+  baslik: string;
+  aciklama: string;
+}
+
+const { index, simge, baslik, aciklama } = Astro.props;
+const sira = String(index).padStart(2, '0');
+---
+
+<article class="cizgili-satir kayit-satiri py-6">
+  <span class="kayit-satiri-sira" aria-hidden="true">{sira}</span>
+  <span class="kayit-satiri-simge">
+    <Simge ad={simge} />
+  </span>
+  <div class="min-w-0">
+    <h3 class="text-base font-semibold">{baslik}</h3>
+    <p class="mt-1.5 text-sm text-[color:var(--color-metin-ikincil)]">{aciklama}</p>
+  </div>
+</article>
+
+<style>
+  .kayit-satiri {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    align-items: start;
+    column-gap: 1rem;
+  }
+  .kayit-satiri-sira {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-metin-soluk);
+    padding-top: 0.1rem;
+  }
+  .kayit-satiri-simge {
+    display: inline-flex;
+    width: 1.35rem;
+    height: 1.35rem;
+    color: var(--color-metin-ikincil);
+    padding-top: 0.1rem;
+  }
+</style>

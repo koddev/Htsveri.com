@@ -1,12 +1,13 @@
 ---
 // Tüm sayfada sabit (fixed) kalan, hareketli düğüm/kenar ağı arka planı.
-// Bağımlılıksız, saf Canvas2D — hiçbir npm particle kütüphanesi kullanılmaz.
+// tsParticles (slim paketi) ile yüklenir — elle yazılmış bir Canvas2D
+// döngüsü yerine bakımı yapılan, üçüncü taraf bir kütüphane kullanılır.
 ---
 
 <div class="veri-agi-kok" aria-hidden="true">
   <div class="izgara-zemin veri-agi-izgara"></div>
   <div class="veri-agi-parlama"></div>
-  <canvas id="veri-agi-tuval"></canvas>
+  <div id="veri-agi-tuval"></div>
 </div>
 
 <style>
@@ -25,8 +26,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 55% 45% at 22% 10%, color-mix(in srgb, var(--color-mor) 26%, transparent), transparent 70%),
-      radial-gradient(ellipse 50% 40% at 82% 65%, color-mix(in srgb, var(--color-siyan) 20%, transparent), transparent 70%);
+      radial-gradient(ellipse 50% 40% at 20% 8%, color-mix(in srgb, var(--color-tugla) 10%, transparent), transparent 70%),
+      radial-gradient(ellipse 45% 35% at 85% 70%, color-mix(in srgb, var(--color-panel-cizgi-parlak) 35%, transparent), transparent 70%);
   }
   #veri-agi-tuval {
     position: absolute;
@@ -37,150 +38,69 @@
 </style>
 
 <script>
-  const tuval = document.getElementById('veri-agi-tuval') as HTMLCanvasElement | null;
-  if (tuval) {
-    const baglam = tuval.getContext('2d');
-    if (baglam) {
-      const azaltilmisHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const mobilMi = () => window.matchMedia('(max-width: 640px)').matches;
+  import { tsParticles, type Container } from '@tsparticles/engine';
+  import { loadSlim } from '@tsparticles/slim';
 
-      type Dugum = { x: number; y: number; vx: number; vy: number; r: number };
+  const azaltilmisHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hedef = document.getElementById('veri-agi-tuval');
 
-      let genislik = 0;
-      let yukseklik = 0;
-      let oran = 1;
-      let dugumler: Dugum[] = [];
-      let calisiyor = false;
-      let kareId = 0;
-      let sonZaman = 0;
+  // Azaltılmış hareket tercih edildiğinde animasyon hiç başlatılmaz; zemin,
+  // ızgara ve parlama katmanları sabit kalır — bu, en sade ve en erişilebilir seçenektir.
+  if (!azaltilmisHareket && hedef) {
+    const mobilMi = window.matchMedia('(max-width: 640px)').matches;
 
-      function dugumSayisiHesapla() {
-        const alan = genislik * yukseklik;
-        const taban = Math.floor(alan / 22000);
-        const tavan = mobilMi() ? 30 : 85;
-        const taban2 = mobilMi() ? 16 : 28;
-        return Math.max(taban2, Math.min(tavan, taban));
+    await loadSlim(tsParticles);
+
+    const kapsayici: Container | undefined = await tsParticles.load({
+      id: 'veri-agi-tuval',
+      options: {
+        fullScreen: { enable: false },
+        fpsLimit: 30,
+        detectRetina: true,
+        pauseOnBlur: true,
+        background: { color: { value: 'transparent' } },
+        particles: {
+          number: {
+            value: mobilMi ? 22 : 60,
+            density: { enable: true, width: 1920, height: 1080 },
+          },
+          color: {
+            value: ['#9b968b', '#9b968b', '#9b968b', '#9b968b', '#9b968b', '#b23a2c'],
+          },
+          opacity: { value: 0.5 },
+          size: { value: { min: 1, max: 2.4 } },
+          links: {
+            enable: true,
+            distance: mobilMi ? 110 : 150,
+            color: 'random',
+            opacity: 0.2,
+            width: 1,
+          },
+          move: {
+            enable: true,
+            speed: 0.3,
+            direction: 'none',
+            random: true,
+            straight: false,
+            outModes: { default: 'out' },
+          },
+        },
+        interactivity: {
+          events: { onHover: { enable: false }, onClick: { enable: false } },
+        },
+      },
+    });
+
+    // Kütüphanenin pauseOnBlur'u yalnızca pencere odağını kaybedince devreye
+    // girer; sekme arka plana alındığında da (odak değişmeden) durdurmak için
+    // visibilitychange olayını ayrıca dinliyoruz.
+    document.addEventListener('visibilitychange', () => {
+      if (!kapsayici) return;
+      if (document.hidden) {
+        kapsayici.pause();
+      } else {
+        kapsayici.play();
       }
-
-      function dugumleriOlustur() {
-        const adet = dugumSayisiHesapla();
-        dugumler = Array.from({ length: adet }, () => ({
-          x: Math.random() * genislik,
-          y: Math.random() * yukseklik,
-          vx: (Math.random() - 0.5) * 0.24,
-          vy: (Math.random() - 0.5) * 0.24,
-          r: 1.2 + Math.random() * 1.2,
-        }));
-      }
-
-      function boyutlandir() {
-        oran = Math.min(window.devicePixelRatio || 1, 2);
-        genislik = tuval!.clientWidth;
-        yukseklik = tuval!.clientHeight;
-        tuval!.width = Math.round(genislik * oran);
-        tuval!.height = Math.round(yukseklik * oran);
-        baglam!.setTransform(oran, 0, 0, oran, 0, 0);
-        dugumleriOlustur();
-      }
-
-      function birKareCiz() {
-        baglam!.clearRect(0, 0, genislik, yukseklik);
-        baglam!.fillStyle = 'rgba(10, 12, 11, 1)';
-        baglam!.fillRect(0, 0, genislik, yukseklik);
-
-        const maxMesafe = mobilMi() ? 110 : 150;
-
-        for (let i = 0; i < dugumler.length; i++) {
-          for (let j = i + 1; j < dugumler.length; j++) {
-            const a = dugumler[i];
-            const b = dugumler[j];
-            const dx = a.x - b.x;
-            const dy = a.y - b.y;
-            const mesafe = Math.hypot(dx, dy);
-            if (mesafe < maxMesafe) {
-              const opaklik = (1 - mesafe / maxMesafe) * 0.32;
-              baglam!.strokeStyle =
-                (i + j) % 6 === 0 ? `rgba(62, 92, 118, ${opaklik})` : `rgba(34, 184, 140, ${opaklik})`;
-              baglam!.lineWidth = 1;
-              baglam!.beginPath();
-              baglam!.moveTo(a.x, a.y);
-              baglam!.lineTo(b.x, b.y);
-              baglam!.stroke();
-            }
-          }
-        }
-
-        for (const d of dugumler) {
-          const parlama = baglam!.createRadialGradient(d.x, d.y, 0, d.x, d.y, 7);
-          parlama.addColorStop(0, 'rgba(110, 224, 190, 0.9)');
-          parlama.addColorStop(1, 'rgba(110, 224, 190, 0)');
-          baglam!.fillStyle = parlama;
-          baglam!.beginPath();
-          baglam!.arc(d.x, d.y, 7, 0, Math.PI * 2);
-          baglam!.fill();
-
-          baglam!.fillStyle = 'rgba(236, 239, 236, 0.95)';
-          baglam!.beginPath();
-          baglam!.arc(d.x, d.y, d.r, 0, Math.PI * 2);
-          baglam!.fill();
-        }
-      }
-
-      function dugumleriGuncelle() {
-        for (const d of dugumler) {
-          d.x += d.vx;
-          d.y += d.vy;
-          if (d.x < -10) d.x = genislik + 10;
-          if (d.x > genislik + 10) d.x = -10;
-          if (d.y < -10) d.y = yukseklik + 10;
-          if (d.y > yukseklik + 10) d.y = -10;
-        }
-      }
-
-      function dongu(zaman: number) {
-        if (!calisiyor) return;
-        if (zaman - sonZaman > 16) {
-          dugumleriGuncelle();
-          birKareCiz();
-          sonZaman = zaman;
-        }
-        kareId = requestAnimationFrame(dongu);
-      }
-
-      function baslat() {
-        if (calisiyor) return;
-        calisiyor = true;
-        kareId = requestAnimationFrame(dongu);
-      }
-
-      function durdur() {
-        calisiyor = false;
-        cancelAnimationFrame(kareId);
-      }
-
-      let yenidenBoyutlandirZamani: ReturnType<typeof setTimeout> | undefined;
-      window.addEventListener('resize', () => {
-        clearTimeout(yenidenBoyutlandirZamani);
-        yenidenBoyutlandirZamani = setTimeout(() => {
-          boyutlandir();
-          birKareCiz();
-        }, 150);
-      });
-
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          durdur();
-        } else if (!azaltilmisHareket) {
-          baslat();
-        }
-      });
-
-      boyutlandir();
-      birKareCiz();
-
-      if (!azaltilmisHareket) {
-        baslat();
-      }
-    }
+    });
   }
 </script>

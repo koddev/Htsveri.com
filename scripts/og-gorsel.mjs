@@ -1,5 +1,6 @@
-// Sosyal paylaşım (Open Graph) görselini üretir: koyu grafit zemin + düğüm/kenar ağı motifi.
-// KovanSite'ın krem/kehribar OG tasarımının kasıtlı tersi.
+// Sosyal paylaşım (Open Graph) görselini üretir: koyu mürekkep zemin + ince
+// düğüm/kenar ağı deseni, tuğla kırmızısı yalnızca seyrek bir ikincil vurgu
+// olarak kullanılır. KovanSite'ın krem/kehribar OG tasarımının kasıtlı tersi.
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -18,7 +19,7 @@ function sayi(min, max) {
 function dugumUret(adet) {
   const dugumler = [];
   for (let i = 0; i < adet; i++) {
-    dugumler.push({ x: sayi(0, GENISLIK), y: sayi(0, YUKSEKLIK), r: sayi(1.6, 3.2) });
+    dugumler.push({ x: sayi(0, GENISLIK), y: sayi(0, YUKSEKLIK), r: sayi(1.3, 2.6) });
   }
   return dugumler;
 }
@@ -31,8 +32,8 @@ function kenarlarSvg(dugumler, maxMesafe) {
       const b = dugumler[j];
       const mesafe = Math.hypot(a.x - b.x, a.y - b.y);
       if (mesafe < maxMesafe) {
-        const opaklik = (1 - mesafe / maxMesafe) * 0.5;
-        const renk = Math.random() > 0.82 ? '#3e5c76' : '#22b88c';
+        const opaklik = (1 - mesafe / maxMesafe) * 0.4;
+        const renk = Math.random() > 0.86 ? '#b23a2c' : '#3d403a';
         parcalar += `<line x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" stroke="${renk}" stroke-width="1" stroke-opacity="${opaklik.toFixed(2)}" />`;
       }
     }
@@ -42,38 +43,22 @@ function kenarlarSvg(dugumler, maxMesafe) {
 
 function dugumlerSvg(dugumler) {
   return dugumler
-    .map((d) => `<circle cx="${d.x.toFixed(1)}" cy="${d.y.toFixed(1)}" r="${d.r.toFixed(1)}" fill="#6ee0be" fill-opacity="0.9" />`)
+    .map((d) => `<circle cx="${d.x.toFixed(1)}" cy="${d.y.toFixed(1)}" r="${d.r.toFixed(1)}" fill="#9b968b" fill-opacity="0.75" />`)
     .join('');
 }
 
-const dugumler = dugumUret(48);
+const dugumler = dugumUret(46);
 
 const svg = `
 <svg width="${GENISLIK}" height="${YUKSEKLIK}" viewBox="0 0 ${GENISLIK} ${YUKSEKLIK}" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="parlamaMor" cx="72%" cy="18%" r="55%">
-      <stop offset="0%" stop-color="#3e5c76" stop-opacity="0.35" />
-      <stop offset="100%" stop-color="#3e5c76" stop-opacity="0" />
-    </radialGradient>
-    <radialGradient id="parlamaSiyan" cx="18%" cy="85%" r="55%">
-      <stop offset="0%" stop-color="#22b88c" stop-opacity="0.28" />
-      <stop offset="100%" stop-color="#22b88c" stop-opacity="0" />
-    </radialGradient>
-    <linearGradient id="baslikGradyan" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ffffff" />
-      <stop offset="55%" stop-color="#6ee0be" />
-      <stop offset="100%" stop-color="#8fb0c6" />
-    </linearGradient>
-  </defs>
-  <rect width="${GENISLIK}" height="${YUKSEKLIK}" fill="#0a0c0b" />
-  <rect width="${GENISLIK}" height="${YUKSEKLIK}" fill="url(#parlamaMor)" />
-  <rect width="${GENISLIK}" height="${YUKSEKLIK}" fill="url(#parlamaSiyan)" />
-  <g opacity="0.8">${kenarlarSvg(dugumler, 150)}</g>
+  <rect width="${GENISLIK}" height="${YUKSEKLIK}" fill="#0b0c0d" />
+  <g opacity="0.75">${kenarlarSvg(dugumler, 150)}</g>
   <g>${dugumlerSvg(dugumler)}</g>
-  <rect x="0" y="0" width="${GENISLIK}" height="${YUKSEKLIK}" fill="#0a0c0b" fill-opacity="0.32" />
-  <text x="90" y="270" font-family="Arial, sans-serif" font-size="30" font-weight="600" letter-spacing="4" fill="#22b88c">HTS KAYIT ANALİZİ</text>
-  <text x="88" y="340" font-family="Arial, sans-serif" font-size="72" font-weight="800" fill="url(#baslikGradyan)">HTS Analiz Programı</text>
-  <text x="90" y="400" font-family="Arial, sans-serif" font-size="30" fill="#a2aba3">Verileriniz bilgisayarınızdan çıkmadan, dakikalar içinde bulguya dönüşür.</text>
+  <rect x="0" y="0" width="${GENISLIK}" height="${YUKSEKLIK}" fill="#0b0c0d" fill-opacity="0.4" />
+  <rect x="90" y="222" width="28" height="2" fill="#b23a2c" />
+  <text x="90" y="268" font-family="Consolas, 'Courier New', monospace" font-size="24" fill="#9b968b">HTS-2024 / Analiz Konsolu</text>
+  <text x="88" y="340" font-family="Georgia, 'Times New Roman', serif" font-size="68" font-weight="700" fill="#ece8df">HTS Analiz Programı</text>
+  <text x="90" y="400" font-family="Arial, sans-serif" font-size="28" fill="#9b968b">Verileriniz bilgisayarınızdan çıkmadan, dakikalar içinde bulguya dönüşür.</text>
 </svg>
 `;
 

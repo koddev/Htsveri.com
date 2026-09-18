@@ -11,27 +11,21 @@ const { ad, etiket, class: sinif } = Astro.props;
 const govde = simgeler[ad];
 ---
 
-<span class={`simge-kapsayici ${sinif ?? ''}`} role={etiket ? 'img' : undefined} aria-label={etiket} aria-hidden={etiket ? undefined : 'true'}>
-  <svg viewBox="0 0 24 24" class="simge-parlama" style="fill:currentColor" set:html={govde} />
-  <svg viewBox="0 0 24 24" class="simge-govde" style="fill:currentColor" set:html={govde} />
-</span>
+<svg
+  viewBox="0 0 24 24"
+  class={`simge ${sinif ?? ''}`}
+  style="fill:currentColor"
+  role={etiket ? 'img' : undefined}
+  aria-label={etiket}
+  aria-hidden={etiket ? undefined : 'true'}
+  set:html={govde}
+/>
 
 <style>
-  .simge-kapsayici {
-    position: relative;
-    display: inline-flex;
+  .simge {
+    display: inline-block;
     width: 1.5em;
     height: 1.5em;
-  }
-  .simge-parlama,
-  .simge-govde {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .simge-parlama {
-    opacity: 0.55;
-    filter: blur(5px);
+    flex-shrink: 0;
   }
 </style>
