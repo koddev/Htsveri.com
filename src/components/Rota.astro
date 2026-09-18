@@ -1,0 +1,126 @@
+---
+import Simge from './Simge.astro';
+import type { SimgeAdi } from '~/data/simgeler';
+
+interface Adim {
+  simge: SimgeAdi;
+  baslik: string;
+  aciklama: string;
+}
+
+const adimlar: Adim[] = [
+  {
+    simge: 'dosyaAktar',
+    baslik: 'Dosyaları Bırakın',
+    aciklama:
+      'Operatörden gelen BTK biçimli Excel dökümünü (.xlsx, .xls, .xlsb) sürükleyip bırakın. Sütun düzeni standart dışı olsa bile dosya bir uyarıyla içeri alınır.',
+  },
+  {
+    simge: 'veriKatmani',
+    baslik: 'Yerel Model Kurulur',
+    aciklama:
+      'Program, kayıtları kendi bilgisayarınızda işler ve sorgulanabilir hale getirir — milyar satır ölçeğine kadar, kurum sunucusuna gerek kalmadan.',
+  },
+  {
+    simge: 'konumIsareti',
+    baslik: 'Canlı Keşif',
+    aciklama:
+      'Sonuçları haritada kümeleyip zaman eksenine göre süzün, ya da düzenlenebilir bir ilişki diyagramında hatlar arasındaki bağlantıyı görün.',
+  },
+  {
+    simge: 'onayRozeti',
+    baslik: 'Kanıtlanabilir Çıktı',
+    aciklama:
+      'Bulguları Excel veya CSV olarak dışa aktarın; isterseniz yerel bir MSSQL/PostgreSQL veritabanına aktarıp kendi SQL sorgunuzla ilerleyin.',
+  },
+];
+---
+
+<div class="rota-omurga">
+  {
+    adimlar.map((adim, i) => (
+      <div class:list={['rota-adim', i % 2 === 1 && 'rota-adim-ters']}>
+        <div class="rota-nokta" aria-hidden="true" />
+        <div class="cam-panel rota-kart p-6">
+          <div class="mb-3 flex items-center gap-3">
+            <span class="rota-simge-kapsul">
+              <Simge ad={adim.simge} />
+            </span>
+            <span class="text-sm font-semibold tracking-wide text-[color:var(--color-metin-soluk)]">
+              Adım {i + 1}
+            </span>
+          </div>
+          <h3 class="text-xl font-bold">{adim.baslik}</h3>
+          <p class="mt-2 text-[color:var(--color-metin-ikincil)]">{adim.aciklama}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .rota-omurga {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    max-width: 52rem;
+    margin: 0 auto;
+    padding-left: 2rem;
+  }
+  .rota-omurga::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.4rem;
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-siyan), var(--color-mor));
+    opacity: 0.6;
+  }
+  .rota-adim {
+    position: relative;
+  }
+  .rota-nokta {
+    position: absolute;
+    top: 1.9rem;
+    left: -2rem;
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: 50%;
+    background: var(--color-siyan);
+    box-shadow: 0 0 16px 3px color-mix(in srgb, var(--color-siyan) 70%, transparent);
+    transform: translateX(0.35rem);
+  }
+  .rota-simge-kapsul {
+    display: inline-flex;
+    width: 1.6rem;
+    height: 1.6rem;
+    color: var(--color-siyan);
+  }
+
+  @media (min-width: 768px) {
+    .rota-omurga {
+      padding-left: 0;
+    }
+    .rota-omurga::before {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .rota-adim {
+      width: calc(50% - 2.5rem);
+    }
+    .rota-adim-ters {
+      align-self: flex-end;
+    }
+    .rota-nokta {
+      left: auto;
+      right: -2.9rem;
+      transform: none;
+    }
+    .rota-adim-ters .rota-nokta {
+      right: auto;
+      left: -2.9rem;
+    }
+  }
+</style>

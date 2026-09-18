@@ -1,0 +1,33 @@
+---
+import { sorular } from '~/data/sorular';
+---
+
+<div class="mx-auto flex max-w-3xl flex-col gap-3">
+  {
+    sorular.map((s) => (
+      <details class="cam-panel soru-detay group px-5 py-1">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-4 py-4 text-left font-semibold">
+          <span>{s.soru}</span>
+          <span class="soru-ok" aria-hidden="true">
+            ↓
+          </span>
+        </summary>
+        <p class="pb-5 text-[color:var(--color-metin-ikincil)]">{s.cevap}</p>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .soru-detay summary::-webkit-details-marker {
+    display: none;
+  }
+  .soru-ok {
+    flex-shrink: 0;
+    color: var(--color-siyan);
+    transition: transform 0.2s ease;
+  }
+  .soru-detay[open] .soru-ok {
+    transform: rotate(180deg);
+  }
+</style>

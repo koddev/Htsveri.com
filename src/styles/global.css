@@ -1,0 +1,187 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource/sora/600.css";
+@import "@fontsource/sora/800.css";
+
+/*
+  HTS Analiz Programı — tasarım belirteç katmanı.
+
+  Koyu lacivert taban, camsı (glass) panel yüzeyler, siyan/mor/pembe uçlu
+  çok renkli vurgu paleti. Amaç: analitik/canlı-veri hissi.
+*/
+
+@theme {
+  --font-sans: "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: "Sora", "Inter Variable", sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  /* Taban */
+  --color-zemin: #070b14;
+  --color-zemin-2: #0b1220;
+  --color-panel: #0d1526;
+  --color-panel-cizgi: #1b2740;
+  --color-panel-cizgi-parlak: #2b3a5c;
+
+  /* Metin */
+  --color-metin: #e7ecf7;
+  --color-metin-ikincil: #9aa7c2;
+  --color-metin-soluk: #64708c;
+
+  /* Çok renkli vurgu paleti — özellik rozetlerinde dönüşümlü kullanılır */
+  --color-siyan: #22d3ee;
+  --color-mavi: #3b82f6;
+  --color-mor: #8b5cf6;
+  --color-pembe: #ec4899;
+  --color-yesil: #34d399;
+
+  --radius-panel: 1rem;
+  --radius-pill: 999px;
+  --radius-rozet: 0.85rem;
+
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9063rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.3125rem;
+  --text-2xl: 1.625rem;
+  --text-3xl: 2.0625rem;
+  --text-4xl: 2.75rem;
+  --text-5xl: 3.5rem;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    background: var(--color-zemin);
+    color: var(--color-metin);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-siyan);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Camsı panel — özellik kartları, SSS, veri güvenliği bloğu ortak yüzeyi */
+  .cam-panel {
+    background: color-mix(in srgb, var(--color-panel) 88%, transparent);
+    border: 1px solid var(--color-panel-cizgi);
+    border-radius: var(--radius-panel);
+    backdrop-filter: blur(10px);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .cam-panel:hover {
+    border-color: var(--color-panel-cizgi-parlak);
+    box-shadow: 0 0 48px -14px color-mix(in srgb, var(--color-siyan) 55%, transparent);
+    transform: translateY(-3px);
+  }
+
+  /* Eyebrow hap rozet */
+  .hap-etiket {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-panel-cizgi-parlak);
+    background: color-mix(in srgb, var(--color-siyan) 12%, var(--color-panel));
+    padding: 0.35rem 0.9rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-siyan);
+  }
+
+  /* İki tonlu gradyan başlık metni */
+  .gradyan-baslik {
+    background: linear-gradient(100deg, #ffffff 10%, var(--color-siyan) 55%, var(--color-mor) 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Ana eylem butonu */
+  .buton-birincil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-pill);
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    background: linear-gradient(120deg, var(--color-siyan), var(--color-mor));
+    color: #04070d;
+    box-shadow: 0 0 40px -10px color-mix(in srgb, var(--color-siyan) 65%, transparent);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .buton-birincil:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 56px -8px color-mix(in srgb, var(--color-siyan) 75%, transparent);
+  }
+
+  .buton-ikincil {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-pill);
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    border: 1px solid var(--color-panel-cizgi-parlak);
+    color: var(--color-metin);
+    background: color-mix(in srgb, var(--color-panel) 60%, transparent);
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+  .buton-ikincil:hover {
+    border-color: var(--color-siyan);
+    background: color-mix(in srgb, var(--color-siyan) 10%, var(--color-panel));
+  }
+
+  /* Arka planda ince ızgara (VeriAgi.astro içinde kullanılır) */
+  .izgara-zemin {
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-siyan) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-siyan) 6%, transparent) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
+  }
+}

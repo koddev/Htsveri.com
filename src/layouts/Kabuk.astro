@@ -1,0 +1,56 @@
+---
+import '~/styles/global.css';
+import { ayar } from '~/ayar';
+import UstSerit from '~/components/UstSerit.astro';
+import AltSerit from '~/components/AltSerit.astro';
+import IndirmeKapisi from '~/components/IndirmeKapisi.astro';
+import VeriAgi from '~/components/VeriAgi.astro';
+
+interface Props {
+  baslik?: string;
+  aciklama?: string;
+}
+
+const { baslik, aciklama = ayar.ozet } = Astro.props;
+const sayfaBasligi = baslik ? `${baslik} · ${ayar.marka}` : ayar.marka;
+const canonical = new URL(Astro.url.pathname, ayar.siteUrl).toString();
+const ogGorsel = new URL('/og.png', ayar.siteUrl).toString();
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{sayfaBasligi}</title>
+    <meta name="description" content={aciklama} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#070b14" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={ayar.marka} />
+    <meta property="og:title" content={sayfaBasligi} />
+    <meta property="og:description" content={aciklama} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogGorsel} />
+    <meta property="og:locale" content="tr_TR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={sayfaBasligi} />
+    <meta name="twitter:description" content={aciklama} />
+    <meta name="twitter:image" content={ogGorsel} />
+
+    <slot name="head-ekstra" />
+  </head>
+  <body>
+    <VeriAgi />
+    <UstSerit />
+    <main>
+      <slot />
+    </main>
+    <AltSerit />
+    <IndirmeKapisi />
+  </body>
+</html>

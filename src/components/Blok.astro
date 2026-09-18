@@ -1,0 +1,20 @@
+---
+interface Props {
+  id?: string;
+  hap?: string;
+  baslik: string;
+  aciklama?: string;
+  class?: string;
+}
+
+const { id, hap, baslik, aciklama, class: sinif = '' } = Astro.props;
+---
+
+<section id={id} class={`relative mx-auto max-w-6xl px-6 py-20 sm:py-24 ${sinif}`}>
+  <div class="mx-auto mb-12 max-w-2xl text-center">
+    {hap && <span class="hap-etiket mb-4">{hap}</span>}
+    <h2 class="mt-4 text-3xl font-extrabold text-balance sm:text-4xl">{baslik}</h2>
+    {aciklama && <p class="mt-4 text-lg text-[color:var(--color-metin-ikincil)]">{aciklama}</p>}
+  </div>
+  <slot />
+</section>

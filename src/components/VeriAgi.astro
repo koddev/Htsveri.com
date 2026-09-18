@@ -1,0 +1,186 @@
+---
+// Tüm sayfada sabit (fixed) kalan, hareketli düğüm/kenar ağı arka planı.
+// Bağımlılıksız, saf Canvas2D — hiçbir npm particle kütüphanesi kullanılmaz.
+---
+
+<div class="veri-agi-kok" aria-hidden="true">
+  <div class="izgara-zemin veri-agi-izgara"></div>
+  <div class="veri-agi-parlama"></div>
+  <canvas id="veri-agi-tuval"></canvas>
+</div>
+
+<style>
+  .veri-agi-kok {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: var(--color-zemin);
+  }
+  .veri-agi-izgara {
+    position: absolute;
+    inset: 0;
+  }
+  .veri-agi-parlama {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 22% 10%, color-mix(in srgb, var(--color-mor) 26%, transparent), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 82% 65%, color-mix(in srgb, var(--color-siyan) 20%, transparent), transparent 70%);
+  }
+  #veri-agi-tuval {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  const tuval = document.getElementById('veri-agi-tuval') as HTMLCanvasElement | null;
+  if (tuval) {
+    const baglam = tuval.getContext('2d');
+    if (baglam) {
+      const azaltilmisHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const mobilMi = () => window.matchMedia('(max-width: 640px)').matches;
+
+      type Dugum = { x: number; y: number; vx: number; vy: number; r: number };
+
+      let genislik = 0;
+      let yukseklik = 0;
+      let oran = 1;
+      let dugumler: Dugum[] = [];
+      let calisiyor = false;
+      let kareId = 0;
+      let sonZaman = 0;
+
+      function dugumSayisiHesapla() {
+        const alan = genislik * yukseklik;
+        const taban = Math.floor(alan / 22000);
+        const tavan = mobilMi() ? 30 : 85;
+        const taban2 = mobilMi() ? 16 : 28;
+        return Math.max(taban2, Math.min(tavan, taban));
+      }
+
+      function dugumleriOlustur() {
+        const adet = dugumSayisiHesapla();
+        dugumler = Array.from({ length: adet }, () => ({
+          x: Math.random() * genislik,
+          y: Math.random() * yukseklik,
+          vx: (Math.random() - 0.5) * 0.24,
+          vy: (Math.random() - 0.5) * 0.24,
+          r: 1.2 + Math.random() * 1.2,
+        }));
+      }
+
+      function boyutlandir() {
+        oran = Math.min(window.devicePixelRatio || 1, 2);
+        genislik = tuval!.clientWidth;
+        yukseklik = tuval!.clientHeight;
+        tuval!.width = Math.round(genislik * oran);
+        tuval!.height = Math.round(yukseklik * oran);
+        baglam!.setTransform(oran, 0, 0, oran, 0, 0);
+        dugumleriOlustur();
+      }
+
+      function birKareCiz() {
+        baglam!.clearRect(0, 0, genislik, yukseklik);
+        baglam!.fillStyle = 'rgba(7, 11, 20, 1)';
+        baglam!.fillRect(0, 0, genislik, yukseklik);
+
+        const maxMesafe = mobilMi() ? 110 : 150;
+
+        for (let i = 0; i < dugumler.length; i++) {
+          for (let j = i + 1; j < dugumler.length; j++) {
+            const a = dugumler[i];
+            const b = dugumler[j];
+            const dx = a.x - b.x;
+            const dy = a.y - b.y;
+            const mesafe = Math.hypot(dx, dy);
+            if (mesafe < maxMesafe) {
+              const opaklik = (1 - mesafe / maxMesafe) * 0.32;
+              baglam!.strokeStyle =
+                (i + j) % 6 === 0 ? `rgba(139, 92, 246, ${opaklik})` : `rgba(34, 211, 238, ${opaklik})`;
+              baglam!.lineWidth = 1;
+              baglam!.beginPath();
+              baglam!.moveTo(a.x, a.y);
+              baglam!.lineTo(b.x, b.y);
+              baglam!.stroke();
+            }
+          }
+        }
+
+        for (const d of dugumler) {
+          const parlama = baglam!.createRadialGradient(d.x, d.y, 0, d.x, d.y, 7);
+          parlama.addColorStop(0, 'rgba(103, 232, 249, 0.9)');
+          parlama.addColorStop(1, 'rgba(103, 232, 249, 0)');
+          baglam!.fillStyle = parlama;
+          baglam!.beginPath();
+          baglam!.arc(d.x, d.y, 7, 0, Math.PI * 2);
+          baglam!.fill();
+
+          baglam!.fillStyle = 'rgba(224, 242, 254, 0.95)';
+          baglam!.beginPath();
+          baglam!.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+          baglam!.fill();
+        }
+      }
+
+      function dugumleriGuncelle() {
+        for (const d of dugumler) {
+          d.x += d.vx;
+          d.y += d.vy;
+          if (d.x < -10) d.x = genislik + 10;
+          if (d.x > genislik + 10) d.x = -10;
+          if (d.y < -10) d.y = yukseklik + 10;
+          if (d.y > yukseklik + 10) d.y = -10;
+        }
+      }
+
+      function dongu(zaman: number) {
+        if (!calisiyor) return;
+        if (zaman - sonZaman > 16) {
+          dugumleriGuncelle();
+          birKareCiz();
+          sonZaman = zaman;
+        }
+        kareId = requestAnimationFrame(dongu);
+      }
+
+      function baslat() {
+        if (calisiyor) return;
+        calisiyor = true;
+        kareId = requestAnimationFrame(dongu);
+      }
+
+      function durdur() {
+        calisiyor = false;
+        cancelAnimationFrame(kareId);
+      }
+
+      let yenidenBoyutlandirZamani: ReturnType<typeof setTimeout> | undefined;
+      window.addEventListener('resize', () => {
+        clearTimeout(yenidenBoyutlandirZamani);
+        yenidenBoyutlandirZamani = setTimeout(() => {
+          boyutlandir();
+          birKareCiz();
+        }, 150);
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          durdur();
+        } else if (!azaltilmisHareket) {
+          baslat();
+        }
+      });
+
+      boyutlandir();
+      birKareCiz();
+
+      if (!azaltilmisHareket) {
+        baslat();
+      }
+    }
+  }
+</script>

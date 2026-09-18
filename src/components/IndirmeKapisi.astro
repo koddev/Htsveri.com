@@ -1,0 +1,89 @@
+---
+// Sayfada YALNIZCA BİR KEZ render edilmelidir. Açma tetikleyicileri için IndirmeButonu.astro
+// kullanın (data-indirme-ac özniteliği bu dialog'u açar).
+import { ayar } from '~/ayar';
+---
+
+<dialog id="indirme-dialog" class="indirme-dialog" data-indirme-adresi={ayar.indirmeAdresi}>
+  <form method="dialog" class="indirme-form">
+    <h3 class="text-xl font-bold">İndirmeden Önce</h3>
+    <div class="indirme-metin mt-4 space-y-3 text-sm text-[color:var(--color-metin-ikincil)]">
+      <p>
+        Bu program, içine aktardığınız HTS dosyalarını ve oluşturduğu tüm analiz sonuçlarını yalnızca kendi
+        bilgisayarınızda tutar. Merkezî sunucuya iletilen tek bilgi, hesabınıza giriş yapmak için kullandığınız
+        e-posta adresi ve parolanızdır.
+      </p>
+      <p>
+        Programı yalnızca yasal yetkiniz dahilindeki incelemeler için kullanabilir, tersine mühendislik
+        yapamaz ve üçüncü kişilerle yeniden dağıtamazsınız. Program "olduğu gibi" sunulur; kullanımından
+        doğabilecek sonuçlardan yalnızca kullanıcı sorumludur.
+      </p>
+    </div>
+    <label class="indirme-onay mt-5 flex items-start gap-3 text-sm">
+      <input type="checkbox" id="indirme-onay-kutusu" class="mt-1" />
+      <span>Yukarıdaki kullanım koşullarını okudum ve kabul ediyorum.</span>
+    </label>
+    <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+      <button type="button" class="buton-ikincil" data-indirme-vazgec>Vazgeç</button>
+      <button type="button" class="buton-birincil" id="indirme-kabul-butonu" disabled data-indirme-kabul>
+        Kabul Ediyorum, İndir
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  // define:vars kasıtlı olarak KULLANILMAZ: Astro bunu her zaman inline script'e
+  // çevirir, bu da dağıtımdaki sıkı `script-src 'self'` CSP'sini ihlal eder.
+  // Bunun yerine adres, dialog'un data-indirme-adresi özniteliğinden okunur ve
+  // bu script değişmez/statik kalarak ayrı bir modül dosyası olarak paketlenir.
+  const dialog = document.getElementById('indirme-dialog');
+  const onayKutusu = document.getElementById('indirme-onay-kutusu');
+  const kabulButonu = document.getElementById('indirme-kabul-butonu');
+  const indirmeAdresi = dialog?.dataset.indirmeAdresi ?? '';
+
+  document.querySelectorAll('[data-indirme-ac]').forEach((buton) => {
+    buton.addEventListener('click', () => {
+      dialog?.showModal();
+    });
+  });
+
+  document.querySelectorAll('[data-indirme-vazgec]').forEach((buton) => {
+    buton.addEventListener('click', () => {
+      dialog?.close();
+    });
+  });
+
+  onayKutusu?.addEventListener('change', () => {
+    if (kabulButonu) {
+      kabulButonu.disabled = !onayKutusu.checked;
+    }
+  });
+
+  kabulButonu?.addEventListener('click', () => {
+    if (!onayKutusu?.checked || !indirmeAdresi) return;
+    window.location.assign(indirmeAdresi);
+  });
+</script>
+
+<style>
+  .indirme-dialog {
+    max-width: 32rem;
+    width: calc(100% - 2rem);
+    margin: auto;
+    border: 1px solid var(--color-panel-cizgi-parlak);
+    border-radius: var(--radius-panel);
+    background: var(--color-panel);
+    color: var(--color-metin);
+    padding: 1.75rem;
+  }
+  .indirme-dialog::backdrop {
+    background: rgba(4, 7, 13, 0.72);
+    backdrop-filter: blur(3px);
+  }
+  #indirme-kabul-butonu:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+</style>

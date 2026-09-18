@@ -1,0 +1,12 @@
+---
+interface Props {
+  class?: string;
+  as?: 'div' | 'article' | 'li';
+}
+
+const { class: sinif = '', as: Etiket = 'div' } = Astro.props;
+---
+
+<Etiket class={`cam-panel p-6 ${sinif}`}>
+  <slot />
+</Etiket>

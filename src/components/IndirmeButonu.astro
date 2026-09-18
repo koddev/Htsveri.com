@@ -1,0 +1,14 @@
+---
+interface Props {
+  etiket?: string;
+  class?: string;
+  varyant?: 'birincil' | 'ikincil';
+}
+
+const { etiket = 'Ücretsiz İndir', class: sinif = '', varyant = 'birincil' } = Astro.props;
+const temelSinif = varyant === 'birincil' ? 'buton-birincil' : 'buton-ikincil';
+---
+
+<button type="button" class={`${temelSinif} ${sinif}`} data-indirme-ac>
+  {etiket}
+</button>
